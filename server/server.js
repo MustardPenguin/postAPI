@@ -8,6 +8,8 @@ const server = express();
 
 require('dotenv').config();
 
+const port = 5000;
+
 // Routes
 const User = require('./routes/user');
 const Blog = require('./routes/blog');
@@ -34,6 +36,6 @@ server.use('/users', User);
 server.use('/blogs', Blog);
 server.use('/comments', Comment);
 
-server.listen(3000, () => {
-    console.log("Listening to port 3000");
+server.listen(port, () => {
+    console.log("Listening to port " + port);
 });
