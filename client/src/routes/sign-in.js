@@ -17,21 +17,39 @@ const Signup = () => {
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        await fetch("http://localhost:5000/users", {
+        await fetch("http://localhost:5000/sign-in", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(form),
         }).then(response => {
+            if(response.status === 401) {
+                window.alert("Invalid account information");
+                return;
+            }
+            console.log(response);
             if(response.ok) {
-                return response.json().then(data => {
-                    window.alert(data.message);
+                response.json().then(data => {
+                    console.log("Logged in");
+                    console.log(data);
                 });
             }
         }).catch(err => {
             window.alert(err);
-            return;
+        });
+    }
+
+    const test = async () => {
+        
+        await fetch("http://localhost:5000/users", {
+            
+        }).then(response => {
+            console.log(response);
+            console.log(response.data);
+
+        }).catch(err => {
+
         });
     }
 
@@ -39,7 +57,7 @@ const Signup = () => {
         <div className='form' onSubmit={onSubmit}>
             <div className='form-holder'>
                 <div>
-                    Register
+                    Sign in
                 </div>
                 <form method="post" action="">
                     <div className='form-field'>
@@ -63,6 +81,9 @@ const Signup = () => {
                     
                 </form>
 
+                <button onClick={test}>
+                    Test
+                </button>
             </div>
         </div>
     )

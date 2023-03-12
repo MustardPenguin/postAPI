@@ -8,8 +8,17 @@ const navigation = () => {
             window.location.href = "blogs";
         } else if(element.innerHTML === "Register") {
             window.location.href = "sign-up";
-        } else {
+        } else if(element.innerHTML === "Sign in") {
             window.location.href = "sign-in";
+        } else {
+            const logout = async () => {
+                await fetch("http://localhost:5000/log-out", {
+                    method: "POST",
+                }).then(response => {
+
+                });
+            }
+            logout();
         }
     }
 
@@ -19,6 +28,7 @@ const navigation = () => {
             <div>
                 <button onClick={clicked}>Register</button>
                 <button onClick={clicked}>Sign in</button>
+                <button onClick={clicked}>Log out</button>
             </div>
         </div>
     )

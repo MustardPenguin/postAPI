@@ -3,6 +3,23 @@
     margin: 0px;
 }
 
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    width: 100%;
+}
+
+#root {
+    min-width: 100%;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navigation */
 .navigation {
     display: flex;
     justify-content: space-between;
