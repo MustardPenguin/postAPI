@@ -5,9 +5,14 @@ const bcrypt = require('bcryptjs');
 const router = Router();
 
 router.get('/', (req, res) => {
-    return res.send("Get users");
+    console.log("received request");
+    if(req.user) {
+        res.json({ user: req.user });
+    } else {
+        res.json({ user: null });
+    }
 });
-
+          
 router.get('/:id', (req, res) => {
     return res.send("Get user " + req.params.id);
 });
@@ -36,10 +41,6 @@ router.post('/', (req, res, next) => {
       .catch((err) => {
         return res.json(err);
       });
-    
-    
-
-    
 });
 
 router.delete('/:id', (req, res) => {
