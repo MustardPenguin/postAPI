@@ -26,8 +26,13 @@ const Signup = () => {
         }).then(response => {
             if(response.ok) {
                 return response.json().then(data => {
-                    window.alert(data.message);
+                    if(data.navigate) {
+                        window.location.href = 'sign-in';
+                    } else {
+                        window.alert(data.message);
+                    }
                 });
+                
             }
         }).catch(err => {
             window.alert(err);

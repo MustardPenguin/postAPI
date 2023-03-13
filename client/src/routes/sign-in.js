@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../styles/registration.css';
 
-const Signup = () => {
+const Signup = (props) => {
     const [form, updateForm] = useState({
         username: "",
         password: "",
@@ -17,7 +17,7 @@ const Signup = () => {
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        await fetch("http://localhost:5000/sign-in", {
+        await fetch("http://localhost:5000/auth/sign-in", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -31,25 +31,12 @@ const Signup = () => {
             console.log(response);
             if(response.ok) {
                 response.json().then(data => {
-                    console.log("Logged in");
-                    console.log(data);
+                    localStorage.setItem('token', data.token);
+                    window.location.href = 'blogs';
                 });
             }
         }).catch(err => {
             window.alert(err);
-        });
-    }
-
-    const test = async () => {
-        
-        await fetch("http://localhost:5000/users", {
-            
-        }).then(response => {
-            console.log(response);
-            console.log(response.data);
-
-        }).catch(err => {
-
         });
     }
 
@@ -80,10 +67,6 @@ const Signup = () => {
                     </div>
                     
                 </form>
-
-                <button onClick={test}>
-                    Test
-                </button>
             </div>
         </div>
     )

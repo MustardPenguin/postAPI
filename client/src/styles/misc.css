@@ -46,3 +46,13 @@ body {
     font-size: 20px;
     color: white;
 }
+
+.navigation-logged-in {
+    gap: 20px;
+}
+
+.navigation-logged-in div {
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+}

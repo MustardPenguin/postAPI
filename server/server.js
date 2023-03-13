@@ -14,6 +14,7 @@ require('dotenv').config();
 const port = 5000;
 
 // Routes
+const RouteAuth = require('./routes/routeAuth');
 const User = require('./routes/user');
 const Blog = require('./routes/blog');
 const Comment = require('./routes/comment');
@@ -41,51 +42,34 @@ server.use(session({
 server.use(passportAuth.initialize());
 server.use(passportAuth.session());
 
+/*
+server.use(function(req, res, next) {
+  // Verify token
+  const token = req.headers["x-access-token"]?.split(' ')[1];
+  if(token) {
+    jwt.verify(token, process.env.jwt_key, (err, decoded) => {
+      if(err) {
+        return res.json({
+          isLoggedIn: false,
+          message: "Failed to Authenticate"
+        });
+      }
+      console.log(decoded);
+      req.user = {
+        id: decoded.id,
+        username: decoded.username
+      };
+      next();
+    });
+  }
+  next();
+})
+*/
+
 server.use('/users', User);
 server.use('/blogs', Blog);
 server.use('/comments', Comment);
-
-// dev.to/salarc123/mern-stack-authentication-tutorial-part-1-the-backend-1c57
-server.post('/sign-in',
-  passportAuth.authenticate("local", {
-    session: false
-  }), (req, res, next) => {
-    const payload = {
-      id: req.user._id,
-      username: req.user.username,
-    }
-    console.log(payload);
-    jwt.sign(
-      payload,
-      "secret", // replace later
-      { expiresIn: 86400 },
-      (err, token) => {
-        if(err) {
-          return res.json({ message: err });
-        }
-        return res.json({
-          message: "Success",
-          token: "Bearer " + token
-        });
-      }
-    );
-  },
-);
-
-
-server.get("/log-out", (req, res, next) => {
-  req.logout(function(err) {
-    if(err) {
-      return next(err);
-    }
-    console.log("Logged out");
-  });
-});
-
-server.use(function(req, res, next) {
-  
-  next();
-});
+server.use('/auth', RouteAuth);
 
 server.listen(port, () => {
     console.log("Listening to port " + port);

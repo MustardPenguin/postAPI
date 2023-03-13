@@ -1,7 +1,7 @@
 import React from 'react';
 import '../styles/misc.css';
 
-const navigation = () => {
+const navigation = (props) => {
     const clicked = (e) => {
         const element = e.target;
         if(element.innerHTML === "Blogs") {
@@ -11,11 +11,16 @@ const navigation = () => {
         } else if(element.innerHTML === "Sign in") {
             window.location.href = "sign-in";
         } else {
+            if(localStorage.getItem('token') == null) { return; }
             const logout = async () => {
-                await fetch("http://localhost:5000/log-out", {
-                    method: "POST",
+                await fetch("http://localhost:5000/auth/log-out", {
+                    method: "GET",
+                    headers: {
+                        "x-access-token": localStorage.getItem("token")
+                    }
                 }).then(response => {
-
+                    localStorage.removeItem('token');
+                    props.user.updateUser("");
                 });
             }
             logout();
@@ -25,11 +30,16 @@ const navigation = () => {
     return(
         <div className="navigation">
             <div onClick={clicked}>Blogs</div>
-            <div>
-                <button onClick={clicked}>Register</button>
-                <button onClick={clicked}>Sign in</button>
-                <button onClick={clicked}>Log out</button>
-            </div>
+            {props.user.username !== null && props.user.username !== ""
+                ? <div className='navigation-logged-in'>
+                    <div>Welcome {props.user.username}!</div>
+                    <button onClick={clicked}>Log out</button>
+                </div>
+                : <div>
+                    <button onClick={clicked}>Register</button>
+                    <button onClick={clicked}>Sign in</button>
+                </div>
+            }
         </div>
     )
 }

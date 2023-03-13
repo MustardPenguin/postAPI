@@ -1,11 +1,12 @@
 const { Router } = require('express');
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
+const jwtVerify = require('../jwtverify');
 
 const router = Router();
 
-router.get('/', (req, res) => {
-    console.log("received request");
+router.get('/', jwtVerify, (req, res) => {
+    //console.log(req.user);
     if(req.user) {
         res.json({ user: req.user });
     } else {
@@ -33,6 +34,7 @@ router.post('/', (req, res, next) => {
             
             user.save().then(() => {
                 console.log("Successfully saved account");
+                return res.json({ message: "Created account", navigate: true });
             }).catch((err) => {
                 return res.json(err);
             });
