@@ -32,7 +32,7 @@ const Signup = () => {
             if(response.ok) {
                 response.json().then(data => {
                     localStorage.setItem('token', data.token);
-                    window.location.href = 'blogs';
+                    window.location.href = 'posts';
                 });
             }
         }).catch(err => {

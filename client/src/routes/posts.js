@@ -3,7 +3,7 @@ import '../styles/post-main.css';
 
 const Posts = () => {
 
-    const createPlog = () => {
+    const createPost = () => {
 
     }
 

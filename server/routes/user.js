@@ -6,12 +6,7 @@ const jwtVerify = require('../jwtverify');
 const router = Router();
 
 router.get('/', jwtVerify, (req, res) => {
-    //console.log(req.user);
-    if(req.user) {
-        res.json({ user: req.user });
-    } else {
-        res.json({ user: null });
-    }
+    return res.send("Get users");
 });
           
 router.get('/:id', (req, res) => {

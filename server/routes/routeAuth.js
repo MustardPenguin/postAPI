@@ -43,4 +43,12 @@ router.get("/log-out", jwtVerify, (req, res, next) => {
     });
 });
 
+router.get('/verify', jwtVerify, (req, res, next) => {
+  if(req.user) {
+    res.json({ user: req.user });
+  } else {
+      res.json({ user: null });
+  }
+});
+
 module.exports = router;

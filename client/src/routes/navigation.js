@@ -4,8 +4,8 @@ import '../styles/misc.css';
 const navigation = (props) => {
     const clicked = (e) => {
         const element = e.target;
-        if(element.innerHTML === "Blogs") {
-            window.location.href = "blogs";
+        if(element.innerHTML === "Posts") {
+            window.location.href = "posts";
         } else if(element.innerHTML === "Register") {
             window.location.href = "sign-up";
         } else if(element.innerHTML === "Sign in") {
@@ -31,7 +31,7 @@ const navigation = (props) => {
 
     return(
         <div className="navigation">
-            <div onClick={clicked}>Blogs</div>
+            <div onClick={clicked}>Posts</div>
             {props.user.username !== null && props.user.username !== ""
                 ? <div className='navigation-logged-in'>
                     <div>Welcome {props.user.username}!</div>
