@@ -19,12 +19,21 @@ body {
     flex-direction: column;
 }
 
+/* For offsetting navigation */
+.post-main-page, .create-post-page {
+    margin-top: 82px; /* Offsets the navigation by the navigation height */
+}
+
 /* Navigation */
 .navigation {
+    position: fixed;
+    width: 100%;
+    box-sizing: border-box;
+
     display: flex;
     justify-content: space-between;
     padding: 20px 5%;
-
+    background-color: white;
     box-shadow: 0px 2px 2px rgb(161, 161, 161);
 }
 

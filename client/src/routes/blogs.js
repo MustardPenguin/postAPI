@@ -1,11 +1,20 @@
 import React from 'react';
+import '../styles/post-main.css';
 
-const blogs = () => {
+const Posts = () => {
+
+    const createPlog = () => {
+
+    }
+
     return(
-        <div>
-            Blogs
+        <div className='post-main-page'>
+            
+            <div className='post-holder'>
+                hey
+            </div>
         </div>
     )
 }
 
-export default blogs;
+export default Posts;

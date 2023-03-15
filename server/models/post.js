@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const User = require('./user');
 
-const blogSchema = new Schema({
+const postSchema = new Schema({
     title: { type: String, required: true },
     text: { type: String, required: true },
     author: { type: Schema.Types.ObjectId, ref: User, required: true },
@@ -12,4 +12,4 @@ const blogSchema = new Schema({
 
 const blogAPI = mongoose.connection.useDb('blogAPI');
 
-module.exports = blogAPI.model('Blog', blogSchema);
+module.exports = blogAPI.model('Post', postSchema);

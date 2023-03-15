@@ -30,6 +30,7 @@ router.post('/', (req, res, next) => {
             const user = new User({
                 username: req.body.username,
                 password: hashedPassword,
+                created: new Date(),
             });
             
             user.save().then(() => {

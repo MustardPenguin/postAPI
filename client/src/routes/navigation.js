@@ -10,6 +10,8 @@ const navigation = (props) => {
             window.location.href = "sign-up";
         } else if(element.innerHTML === "Sign in") {
             window.location.href = "sign-in";
+        } else if(element.innerHTML === 'Create post') {
+            window.location.href = "create-post"
         } else {
             if(localStorage.getItem('token') == null) { return; }
             const logout = async () => {
@@ -33,6 +35,7 @@ const navigation = (props) => {
             {props.user.username !== null && props.user.username !== ""
                 ? <div className='navigation-logged-in'>
                     <div>Welcome {props.user.username}!</div>
+                    <button onClick={clicked}>Create post</button>
                     <button onClick={clicked}>Log out</button>
                 </div>
                 : <div>

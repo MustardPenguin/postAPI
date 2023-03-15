@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import React, { useState } from 'react';
 
 import Navigation from './routes/navigation';
+import CreatePost from "./routes/create-post";
 import Blogs from './routes/blogs';
 import Signup from './routes/sign-up';
 import Signin from './routes/sign-in';
@@ -14,7 +15,7 @@ const RouteSwitch = () => {
     setUser(user);
   }
 
-  const test = async () => {
+  const getAccount = async () => {
     await fetch("http://localhost:5000/users", {
       method: "GET",
       headers: {
@@ -31,7 +32,7 @@ const RouteSwitch = () => {
     });
   }
 
-  test();
+  getAccount();
 
   return (
     <BrowserRouter>
@@ -42,6 +43,7 @@ const RouteSwitch = () => {
       <Route path='/blogs' element={<Blogs />} />
       <Route path='/sign-up' element={<Signup />} />
       <Route path='/sign-in' element={<Signin />} />
+      <Route path='/create-post' element={<CreatePost />} />
     </Routes>
       
     </BrowserRouter>

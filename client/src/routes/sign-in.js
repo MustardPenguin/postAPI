@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../styles/registration.css';
 
-const Signup = (props) => {
+const Signup = () => {
     const [form, updateForm] = useState({
         username: "",
         password: "",
