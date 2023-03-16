@@ -17,8 +17,9 @@ const verifyJWT = (req, res, next) => {
       };
       next();
     });
+  } else {
+    res.json({ message: "Invalid token" });
   }
-  next();
 }
 
 module.exports =  verifyJWT;

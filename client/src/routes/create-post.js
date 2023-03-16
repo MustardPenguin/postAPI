@@ -16,6 +16,14 @@ const CreatePost = (props) => {
                 "x-access-token": localStorage.getItem("token")
             },
             body: JSON.stringify(form)
+        }).then(response => {
+            response.json().then(data => {
+                if(data.created) {
+                    window.location.href = '/posts'
+                }
+            });
+        }).catch(err => {
+
         });
     }
     const onChange = (e) => {
