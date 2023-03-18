@@ -7,12 +7,41 @@
 
 .post-holder {
     display: flex;
-    justify-content: center;
+    align-items: center;
+    flex-direction: column;
     width: 75%;
     max-width: 800px;
     min-height: 250px;
-    margin-top: 25px;
+    margin-top: 24px;
+    margin-bottom: 24px;
+    padding-top: 24px;
+    padding-bottom: 24px;
 
     border-style: solid;
+    gap: 12px;
 }
 
+.post {
+    border-style: solid;
+    width: 80%;
+}
+
+.post div {
+    display: flex;
+    justify-content: center;
+}
+
+/* Title */
+.post > div:nth-child(1) {
+    font-size: 36px;
+    font-weight: bold;
+}
+
+/* Text */
+.post > div:nth-child(4) {
+    padding-top: 8px;
+}
+
+.post > div:nth-child(4) > div {
+    width: 90%;
+}

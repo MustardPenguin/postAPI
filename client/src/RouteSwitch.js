@@ -22,7 +22,7 @@ const RouteSwitch = () => {
       }
     }).then(response => {
       response.json().then(data => {
-        if(data.user !== null) {
+        if(data.user !== undefined) {
           setUser(data.user.username);
         }
       })
