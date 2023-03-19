@@ -44,4 +44,10 @@
 
 .post > div:nth-child(4) > div {
     width: 90%;
+    white-space: pre-line;
+}
+
+.post > div:nth-child(4) > div > p {
+    display: flex;
+    flex-direction: column;
 }

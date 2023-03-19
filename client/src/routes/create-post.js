@@ -20,6 +20,8 @@ const CreatePost = (props) => {
             response.json().then(data => {
                 if(data.created) {
                     window.location.href = '/posts'
+                } else if(data.message) {
+                    window.alert(data.message);
                 }
             });
         }).catch(err => {

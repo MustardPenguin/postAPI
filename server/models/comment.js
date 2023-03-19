@@ -8,7 +8,7 @@ const commentSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: User, required: true },
     blog: { type: Schema.Types.ObjectId, ref: Blog, required: true },
     date: { type: Date, required: true },
-    comment: { type: String, required: true },
+    comment: { type: String, required: true, trim: true },
 });
 
 const blogAPI = mongoose.connection.useDb('blogAPI');

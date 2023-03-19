@@ -40,6 +40,7 @@ router.get("/log-out", jwtVerify, (req, res, next) => {
         return next(err);
       }
       console.log("Logged out");
+      return res.json({ message: "Logged out" });
     });
 });
 

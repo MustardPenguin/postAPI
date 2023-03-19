@@ -5,6 +5,17 @@ const jwtVerify = require('../jwtverify');
 
 const router = Router();
 
+const validateUsername = (username) => {
+    const pattern = /^[A-Za-z0-9_]+$/;
+    return pattern.test(username);
+}
+  
+const validatePassword = (password) => {
+    const pattern = /^[A-Za-z0-9_]+$/;
+    return pattern.test(password);
+}
+  
+
 router.get('/', jwtVerify, (req, res) => {
     return res.send("Get users");
 });
@@ -19,6 +30,10 @@ router.post('/', (req, res, next) => {
         if(user) {
             res.json({ message: "Username already exists" });
             return;
+        }
+
+        if(!validateUsername(req.body.username) || !validatePassword(req.body.password)) {
+            return res.json({ message: "Invalid character in username/password" });
         }
 
         bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {

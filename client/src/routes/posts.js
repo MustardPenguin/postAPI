@@ -9,6 +9,7 @@ const Posts = () => {
         e.preventDefault();
         let element = document.getElementById(id);
         const p = element.querySelector('p');
+
         p.innerHTML = text;
     }
 
@@ -21,7 +22,25 @@ const Posts = () => {
             <div>
                 <div id={post._id}>
                     {(() => {
-                        if(post.text.length > 250) {
+                        const lineBreaks = post.text.split(/\r\n|\r|\n/).length;
+                        if(lineBreaks > 4 && post.text.length < 250) {
+                            // Looks for the fifth line break
+                            let count = 0;
+                            let position = -1;
+                            for(let i = 0; i < post.text.length - 1; i++) {
+                                if(post.text.slice(i, i + 1) === "\n") {
+                                    count++;
+                                    if(count === 5) {
+                                        position = i;
+                                        break;
+                                    }
+                                }
+                            }
+                            const text = post.text.slice(0, position);
+                            let element;
+                            element = <p>{text} <a href="/posts" onClick={(e) => readMore(e, post._id, post.text)}>Read more</a></p>;
+                            return element;
+                        } else if(post.text.length > 250) {
                             const text = post.text.slice(0, 250) + "...";
                             let element;
                             element = <p>{text} <a href="/posts" onClick={(e) => readMore(e, post._id, post.text)}>Read more</a></p>;

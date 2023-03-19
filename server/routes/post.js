@@ -6,11 +6,15 @@ const User = require('../models/user');
 const mongoose = require('mongoose');
 
 router.get('/', (req, res) => {
-    return res.send('Get blogs');
+  Post.find().sort({ date: -1 }).populate("author").then(results => {
+    return res.json({ posts: results });
+  }).catch(err => {
+    return res.status(404).json({ error: "Could not get posts" });
+  });
 });
 
 router.get('/:id', (req, res) => {
-    return res.send('Get blog ' + req.params.id);
+  return res.send('Get blog ' + req.params.id);
 });
 
 router.post('/', jwtVerify, (req, res) => {
@@ -20,6 +24,12 @@ router.post('/', jwtVerify, (req, res) => {
             if(result == undefined) {
                 console.log("Null user");
                 return res.json({ message: "Could not find user" });
+            }
+
+            if(req.body.title.length > 200) {
+              return res.json({ message: "Title cannot be more than 200 characters" });
+            } else if(req.body.text.length > 10000) {
+              return res.json({ message: "Text cannot be more than 10000 characters" });
             }
 
             const post = new Post({
