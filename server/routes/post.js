@@ -4,6 +4,7 @@ const jwtVerify = require('../jwtverify');
 const Post = require('../models/post');
 const User = require('../models/user');
 const mongoose = require('mongoose');
+const upload = require('../upload');
 
 router.get('/', (req, res) => {
   const skip = req.query.skip === undefined ? 0 : req.query.skip;
@@ -19,7 +20,7 @@ router.get('/:id', (req, res) => {
   return res.send('Get blog ' + req.params.id);
 });
 
-router.post('/', jwtVerify, (req, res) => {
+router.post('/', jwtVerify, upload.single('image'), (req, res) => {
     if(req.user) {
         User.findById(req.user.id)
           .then((result) => {
@@ -40,7 +41,13 @@ router.post('/', jwtVerify, (req, res) => {
                 date: new Date(),
                 author: result
             });
+
+            console.log(req.body);
+            console.log(req.file);
+            //console.log(post);
             
+            return res.json({ message: "testing images" });
+            /*
             post.save()
               .then(() => {
                 console.log("Created post");
@@ -49,6 +56,7 @@ router.post('/', jwtVerify, (req, res) => {
               .catch(err => {
                 res.json({ message: err });
               });
+              */
           })
           .catch((err) => {
             console.log(err);

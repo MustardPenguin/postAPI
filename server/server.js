@@ -46,6 +46,7 @@ server.use('/users', User);
 server.use('/posts', Post);
 server.use('/comments', Comment);
 server.use('/auth', RouteAuth);
+server.use('/public', express.static('public'));
 
 server.listen(port, () => {
     console.log("Listening to port " + port);
