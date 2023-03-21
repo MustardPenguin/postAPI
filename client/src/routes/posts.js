@@ -1,9 +1,11 @@
 import React, { useState, useEffect} from 'react';
 import '../styles/post-main.css';
 import { DateTime } from 'luxon';
+import $ from 'jquery';
 
 const Posts = () => {
     const [posts, updatePosts] = useState([]);
+    const [loading, updateLoading] = useState(false);
 
     const readMore = (e, id, text) => {
         e.preventDefault();
@@ -61,23 +63,73 @@ const Posts = () => {
             </div>
         </div>
         )
-        
+    }
+
+    const endOfPosts = () => { 
+        const div = document.createElement('div');
+        div.innerHTML = "You've reached the end!";
+        div.classList.add('end-of-posts');
+        const postHolder = document.querySelector('.post-holder');
+        postHolder.appendChild(div);
+    }
+
+    const fetchPosts = async (params) => {
+        await fetch("http://localhost:5000/posts" + (params ? params : "")
+        ).then(results => {
+            results.json().then(data => {
+                console.log(data);
+                if(data.posts.length === 0) {
+                    endOfPosts();
+                    return;
+                }
+                updatePosts(posts.concat(data.posts));
+            });
+          }).catch(err => {
+            window.alert(err);
+          });
     }
 
     useEffect(() => {
-        const fetchPosts = async () => {
-            await fetch("http://localhost:5000/posts")
-              .then(results => {
-                results.json().then(data => {
-                    console.log(data);
-                    updatePosts([...data.posts]);
-                });
-              })
-              .catch();
-        }
-
         fetchPosts();
     }, []);
+
+    useEffect(() => {
+        // Checks if users scrolls near the bottom, in order to load more posts
+        const loadPosts = () => {
+            if($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+                if(loading) { return; }
+                updateLoading(true);
+                console.log(document.querySelector('.end-of-posts'));
+                setTimeout(() => {
+                    if(document.querySelector('.end-of-posts')) { return; }
+                    updateLoading(false);
+                }, 1000);
+
+                fetchPosts("?" + new URLSearchParams({
+                    skip: posts.length
+                }));
+            }
+        }
+
+        // Scroll debounce
+        function debounce(func, delay) {
+            let timeoutId;
+            return function(...args) {
+              clearTimeout(timeoutId);
+              timeoutId = setTimeout(() => {
+                func.apply(this, args);
+              }, delay);
+            };
+          }
+
+        const scrollHandler = debounce(loadPosts, 300);
+
+        document.addEventListener('scroll', scrollHandler);
+
+        return () => {
+            document.removeEventListener('scroll', scrollHandler);
+        };
+    });
 
     return(
         <div className='post-main-page'>
@@ -85,7 +137,6 @@ const Posts = () => {
                 {posts.map(post => {
                     return createPost(post);
                 })}
-
             </div>
         </div>
     )

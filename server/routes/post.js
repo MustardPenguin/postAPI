@@ -6,7 +6,9 @@ const User = require('../models/user');
 const mongoose = require('mongoose');
 
 router.get('/', (req, res) => {
-  Post.find().sort({ date: -1 }).populate("author").then(results => {
+  const skip = req.query.skip === undefined ? 0 : req.query.skip;
+  console.log(skip);
+  Post.find().sort({ date: -1 }).skip(skip).populate("author").limit(10).then(results => {
     return res.json({ posts: results });
   }).catch(err => {
     return res.status(404).json({ error: "Could not get posts" });
