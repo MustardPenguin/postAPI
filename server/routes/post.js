@@ -35,16 +35,17 @@ router.post('/', jwtVerify, upload.single('image'), (req, res) => {
               return res.json({ message: "Text cannot be more than 10000 characters" });
             }
 
+            const imageUrl = (req.file === undefined ? null : req.file.filename);
             const post = new Post({
                 title: req.body.title,
                 text: req.body.text,
                 date: new Date(),
-                author: result
+                author: result,
+                image: imageUrl,
             });
 
-            console.log(req.body);
             console.log(req.file);
-            //console.log(post);
+            console.log(post);
             
             return res.json({ message: "testing images" });
             /*

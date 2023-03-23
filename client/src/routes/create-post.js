@@ -5,21 +5,29 @@ const CreatePost = (props) => {
     const [form, updateForm] = useState({
         title: '',
         text: '',
+        image: null,
     });
     const onSubmit = async (e) => {
         e.preventDefault();
-        
+
+        const formData = new FormData();
+        formData.append('title', form.title);
+        formData.append('text', form.text);
+        formData.append('image', form.image);
+
+
         await fetch("http://localhost:5000/posts", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
+                //"content-Type": "application/json",
+                //"Content-type": "multipart/form-data",
                 "x-access-token": localStorage.getItem("token")
             },
-            body: JSON.stringify(form)
+            body: formData
         }).then(response => {
             response.json().then(data => {
                 if(data.created) {
-                    window.location.href = '/posts'
+                    window.location.href = '/posts';
                 } else if(data.message) {
                     window.alert(data.message);
                 }
@@ -29,7 +37,8 @@ const CreatePost = (props) => {
         });
     }
     const onChange = (e) => {
-        updateForm({...form, [e.target.name]: e.target.value});
+        const value = e.target.name === "image" ? e.target.files[0] : e.target.value;
+        updateForm({...form, [e.target.name]: value});
     }
     
     return (
@@ -41,10 +50,15 @@ const CreatePost = (props) => {
                         <div>Create post</div>
 
                         <div className='create-post-form'>
-                            <form onSubmit={(e) => onSubmit(e)}>
+                            <form onSubmit={(e) => onSubmit(e)} encType="multipart/form-data">
                                 <div>
                                     <label htmlFor='title'>Title: </label>
                                     <input type='text' required={true} name='title' onChange={onChange} />
+                                </div>
+
+                                <div>
+                                    <label htmlFor='image'>Image: </label>
+                                    <input type='file' name='image' onChange={onChange} />
                                 </div>
                                 
                                 <div>

@@ -8,6 +8,7 @@ const server = express();
 const session = require('express-session');
 const passportAuth = require('./auth');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
 
 require('dotenv').config();
 
@@ -32,7 +33,7 @@ async function main() {
 server.use(cors());
 server.use(logger('dev'));
 server.use(express.json());
-server.use(express.urlencoded({ extended: false }));
+server.use(express.urlencoded({ extended: true }));
 server.use(cookieParser());
 server.use(express.static(path.join(__dirname, 'public')));
 
