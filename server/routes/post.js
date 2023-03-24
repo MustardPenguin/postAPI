@@ -46,9 +46,7 @@ router.post('/', jwtVerify, upload.single('image'), (req, res) => {
 
             console.log(req.file);
             console.log(post);
-            
-            return res.json({ message: "testing images" });
-            /*
+          
             post.save()
               .then(() => {
                 console.log("Created post");
@@ -57,7 +55,7 @@ router.post('/', jwtVerify, upload.single('image'), (req, res) => {
               .catch(err => {
                 res.json({ message: err });
               });
-              */
+              
           })
           .catch((err) => {
             console.log(err);
