@@ -56,9 +56,20 @@
 .post-options {
     margin-top: 12px;
     justify-content: space-around !important;
-    background-color: aliceblue;
 }
 
 .post-options button, .post-options div {
     flex: 1;
+}
+
+.post-options div {
+    border-style: solid;
+    border-width: 1px;
+}
+
+
+/* Image */
+.post-image img {
+    max-width: 100%;
+    max-height: 100%;
 }

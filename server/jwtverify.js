@@ -18,7 +18,7 @@ const verifyJWT = (req, res, next) => {
       next();
     });
   } else {
-    res.json({ message: "Invalid token" });
+    return res.status(498).json({ error: "Invalid token" });
   }
 }
 

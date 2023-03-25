@@ -19,6 +19,7 @@ const RouteAuth = require('./routes/routeAuth');
 const User = require('./routes/user');
 const Post = require('./routes/post');
 const Comment = require('./routes/comment');
+const Like = require('./routes/like');
 
 // Set up mongoose connection
 const mongoose = require("mongoose");
@@ -46,8 +47,9 @@ server.use(passportAuth.session());
 server.use('/users', User);
 server.use('/posts', Post);
 server.use('/comments', Comment);
+server.use('/likes', Like);
 server.use('/auth', RouteAuth);
-server.use('/public', express.static('public'));
+//server.use('/public', express.static('public'));
 
 server.listen(port, () => {
     console.log("Listening to port " + port);

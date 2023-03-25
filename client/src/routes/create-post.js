@@ -19,8 +19,6 @@ const CreatePost = (props) => {
         await fetch("http://localhost:5000/posts", {
             method: "POST",
             headers: {
-                //"content-Type": "application/json",
-                //"Content-type": "multipart/form-data",
                 "x-access-token": localStorage.getItem("token")
             },
             body: formData
