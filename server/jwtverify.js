@@ -5,7 +5,7 @@ const verifyJWT = (req, res, next) => {
   if(token) {
     jwt.verify(token, process.env.jwt_key, (err, decoded) => {
       if(err) {
-        return res.json({
+        return res.status(498).json({
           isLoggedIn: false,
           message: "Failed to Authenticate"
         });
