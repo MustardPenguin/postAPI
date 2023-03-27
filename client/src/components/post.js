@@ -37,7 +37,11 @@ const getText = (post) => {
     }
 }
 
-const likeClicked = async (id) => {
+const likeClicked = async (id, e) => {
+    if(localStorage.getItem('token') === null) {
+        window.alert("Please log in first.");
+        return;
+    }
     const formData = new FormData();
     formData.append('id', id);
     formData.append('type', 'post');
@@ -46,15 +50,19 @@ const likeClicked = async (id) => {
         method: "POST",
         headers: {
             "x-access-token": localStorage.getItem("token"),
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/json'
         },
-        body: formData
+        body: JSON.stringify({ id: id, type: 'post' })
     }).then(response => {
-        response.json().then(data => {
-            if(data.error) {
-                window.alert(data.error);
-            }
-        });
+        if(response.ok) {
+            response.json().then(data => {
+                if(data.success) {
+                    e.target.innerHTML = "Unlike";
+                }
+            });
+        } else {
+            console.log("Error creating like");
+        }
     }).catch(err => {
         window.alert(err);
     });
@@ -81,7 +89,7 @@ const createPost = (post) => {
             </div>
         </div>
         <div className='post-options'>
-            <button onClick={() => likeClicked(post._id)}>Like</button>
+            <button onClick={(e) => likeClicked(post._id, e)}>Like</button>
             <div>0 likes</div>
             <div>0 comments</div>
             <button>Go to post</button>

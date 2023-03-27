@@ -22,7 +22,12 @@ const RouteSwitch = () => {
       }
     }).then(response => {
       response.json().then(data => {
-        if(data.user !== undefined) {
+        console.log(data);
+        if(data.isLoggedIn === false) {
+          // If token exist in local storage but logged in is false, then token
+          // expired, so remove it
+          localStorage.removeItem('token');
+        } else if(data.user !== undefined) {
           setUser(data.user.username);
         }
       })
