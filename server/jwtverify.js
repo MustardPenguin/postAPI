@@ -10,7 +10,7 @@ const verifyJWT = (req, res, next) => {
           message: "Failed to Authenticate"
         });
       }
-      console.log(decoded);
+      
       req.user = {
         id: decoded.id,
         username: decoded.username
@@ -18,6 +18,10 @@ const verifyJWT = (req, res, next) => {
       next();
     });
   } else {
+    // So that guests can fetch posts
+    if(req.query.skip) {
+      return next();
+    }
     return res.status(498).json({ error: "Invalid token" });
   }
 }

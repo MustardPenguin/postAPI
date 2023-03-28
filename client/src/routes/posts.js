@@ -19,7 +19,12 @@ const Posts = () => {
     }
 
     const fetchPosts = async (params) => {
-        await fetch("http://localhost:5000/posts" + (params ? params : "")
+        await fetch("http://localhost:5000/posts" + (params ? params : ""),{
+            headers: {
+                "x-access-token": localStorage.getItem("token"),
+                'Content-Type': 'application/json'
+            },
+        }, 
         ).then(results => {
             results.json().then(data => {
                 console.log(data);
@@ -35,7 +40,9 @@ const Posts = () => {
     }
 
     useEffect(() => {
-        fetchPosts();
+        fetchPosts("?" + new URLSearchParams({
+            skip: 0
+        }));
     }, []);
 
     useEffect(() => {

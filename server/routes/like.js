@@ -19,8 +19,10 @@ router.post('/', jwtVerify, (req, res) => {
     
     let user;
     let item;
+    let dbParams;
     User.findById(req.user.id)
         .then(result => {
+            // Gets user
             if(result === null) {
                 return res.status(404).json({ message: "User not found" });
             }
@@ -28,51 +30,47 @@ router.post('/', jwtVerify, (req, res) => {
         })
         .then(username => {
             user = username._id;
+            // Gets post/comment
             return db.findById(req.body.id);
         })
         .then(result => {
             if(result === null) {
                 return res.status(404).json({ message: "Post/comment not found" });
             }
+            // Checks if the post/comment was already liked by the user
             item = result._id;
             const params = {};
             if(req.body.type === "post") {
-                params['likedPost'] = req.body.id;
+                params['likedPost'] = item;
             } else {
-                params['likedComment'] = req.body.id;
+                params['likedComment'] = item;
             }
-            console.log(params);
-            //return Like.find({  });
+            params['username'] = user;
+            dbParams = params;
+            return Like.find(params);
+        })
+        .then(result => {
+            if(result.length === 0) {
+                // Not liked post/comment found, create one
+                const like = new Like(dbParams);
+                console.log(like);
+                like.save()
+                  .then(() => {
+                    return res.json({ message: "Liked", success: true });
+                  })
+                  .catch(err => {
+                    return res.status(500).json({ message: "Error saving" });
+                  })
+            } else {
+                // "Unlike" the post/comment by deleting it
+                console.log('unlike');
+            }
+            console.log(result);
         })
         .catch(err => {
             return res.status(500).json({ message: err });
         }
     );
-
-    return res.json({ message: "test" });
-    /*
-    db.findById(req.body.id)
-      .then(result => {
-        if(result === null) {
-            return res.status(404).json({ message: "Data not found" });
-        }
-
-        
-        const type = req.body.type === "post" ? "likedPost" : "likedComment";
-        const like = new Like({
-            
-        });
-        return res.json({ message: "Success", success: true });
-        
-        like.save().then(() => {
-            return res.json({ message: "Success", success: true });
-        }).catch(err => {
-            return res.status(500).json({ message: "Error saving" });
-        })
-      })
-      .catch(err => {
-        return res.status(404).json({ error: err });
-      });*/
 });
 
 module.exports = router;

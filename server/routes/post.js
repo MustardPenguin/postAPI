@@ -5,14 +5,39 @@ const Post = require('../models/post');
 const User = require('../models/user');
 const mongoose = require('mongoose');
 const upload = require('../upload');
+const Like = require('../models/like');
+const { listeners } = require('../models/user');
 
-router.get('/', (req, res) => {
+router.get('/', jwtVerify, (req, res) => {
   const skip = req.query.skip === undefined ? 0 : req.query.skip;
-  console.log(skip);
-  Post.find().sort({ date: -1 }).skip(skip).populate("author").limit(10).then(results => {
-    return res.json({ posts: results });
+  let posts;
+  Post.find().sort({ date: -1 }).skip(skip).populate("author").limit(3)
+    .then(results => {
+      // Not logged in, just send posts
+      if(req.user === undefined) {
+        return res.json({ posts: results });
+      }
+
+      // Logged in, check for likes
+      posts = results;
+      const userId = new mongoose.Types.ObjectId(req.user.id);
+
+      const ids = [];
+      for(let post of results) {
+        ids[ids.length] = post._id;
+      }
+
+      Like.find({
+        username: userId, likedPost: { $in: ids }
+      }).then(results => {
+        console.log(results);
+      });
+
+      return res.json({ posts: results });
+  }).then(result => {
+    
   }).catch(err => {
-    return res.status(404).json({ error: "Could not get posts" });
+    return res.status(404).json({ error: err.toString() });
   });
 });
 
