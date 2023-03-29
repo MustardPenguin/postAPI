@@ -53,7 +53,6 @@ router.post('/', jwtVerify, (req, res) => {
             if(result.length === 0) {
                 // Not liked post/comment found, create one
                 const like = new Like(dbParams);
-                console.log(like);
                 like.save()
                   .then(() => {
                     return res.json({ message: "Liked", success: true });
@@ -63,9 +62,17 @@ router.post('/', jwtVerify, (req, res) => {
                   })
             } else {
                 // "Unlike" the post/comment by deleting it
-                console.log('unlike');
+                
+                const id = result[0]._id;
+                Like.findByIdAndDelete(id)
+                  .then(() => {
+                    return res.json({ message: "Unliked", success: true});
+                  })
+                  .catch(err => {
+                    return res.status(500).json({ message: err.toString() });
+                  });
             }
-            console.log(result);
+            
         })
         .catch(err => {
             return res.status(500).json({ message: err });

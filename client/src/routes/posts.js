@@ -39,6 +39,13 @@ const Posts = () => {
           });
     }
 
+    const updateLiked = (id) => {
+        const post = posts.find((post) => {
+            return post._id === id;
+        });
+        console.log(post);
+    }
+
     useEffect(() => {
         fetchPosts("?" + new URLSearchParams({
             skip: 0
@@ -87,7 +94,7 @@ const Posts = () => {
         <div className='post-main-page'>
             <div className='post-holder'>
                 {posts.map(post => {
-                    return CreatePost(post);
+                    return <CreatePost post={post} key={post._id} />;
                 })}
                 <div className='loading-indicator'>
                     {loading === true ? "Loading more posts..." : ""}

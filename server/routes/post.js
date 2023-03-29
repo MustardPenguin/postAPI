@@ -11,7 +11,7 @@ const { listeners } = require('../models/user');
 router.get('/', jwtVerify, (req, res) => {
   const skip = req.query.skip === undefined ? 0 : req.query.skip;
   let posts;
-  Post.find().sort({ date: -1 }).skip(skip).populate("author").limit(3)
+  Post.find().sort({ date: -1 }).skip(skip).populate("author", { password: 0 }).limit(3).lean()
     .then(results => {
       // Not logged in, just send posts
       if(req.user === undefined) {
@@ -27,15 +27,48 @@ router.get('/', jwtVerify, (req, res) => {
         ids[ids.length] = post._id;
       }
 
-      Like.find({
-        username: userId, likedPost: { $in: ids }
-      }).then(results => {
-        console.log(results);
-      });
+      posts = results;
 
-      return res.json({ posts: results });
-  }).then(result => {
+      return Like.find({ username: userId, likedPost: { $in: ids } });
+  }).then(results => {
+    const likedIds = results.map(post => {
+      return post.likedPost.toString();
+    });
     
+    for(const post of posts) {
+      const id = post._id.toString();
+      if(likedIds.includes(id)) {
+        post.liked = true;
+      }
+    }
+
+    return Like.aggregate([
+      {
+        $match: {
+          likedPost: { $in: posts.map(post => post._id ) }
+        }
+      },
+      {
+        $group: {
+          _id: "$likedPost",
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+  }).then(results => {
+    posts.forEach((post) => {
+      const likes = results.find((obj) => {
+        //console.log(obj._id.toString() === post._id.toString());
+        return obj._id.toString() === post._id.toString();
+      });
+      let count = 0;
+      if(likes !== undefined) {
+        count = likes.count;
+      }
+      post.likes = count;
+    });
+    
+    return res.json({ posts: posts });
   }).catch(err => {
     return res.status(404).json({ error: err.toString() });
   });

@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 const { DateTime } = require('luxon');
 
 const readMore = (e, id, text) => {
@@ -57,7 +58,12 @@ const likeClicked = async (id, e) => {
         if(response.ok) {
             response.json().then(data => {
                 if(data.success) {
-                    e.target.innerHTML = "Unlike";
+                    if(data.message === "Liked") {
+                        e.target.innerHTML = "Unlike";
+                    } else {
+                        e.target.innerHTML = "Like";
+                    }
+                    
                 }
             });
         } else {
@@ -68,34 +74,36 @@ const likeClicked = async (id, e) => {
     });
 }
 
-const createPost = (post) => {
+const CreatePost = (props) => {
+    const post = props.post;
+
     return (
-        <div key={post._id} className='post'>
-        <div>{post.title}</div>
-        <div>Posted {DateTime.fromISO(post.date).toLocaleString(DateTime.DATETIME_MED)}</div>
-        <div>By {post.author.username}</div>
-        {(() => {
-            if(post.image) {
-                return (
-                    <div className='post-image'>
-                        <img alt="" src={'http://localhost:5000/uploads/' + post.image} />
-                    </div>
-                )
-            }
-        })()}
-        <div>
-            <div id={post._id}>
-                {getText(post)}
+        <div className='post'>
+            <div>{post.title}</div>
+            <div>Posted {DateTime.fromISO(post.date).toLocaleString(DateTime.DATETIME_MED)}</div>
+            <div>By {post.author.username}</div>
+            {(() => {
+                if(post.image) {
+                    return (
+                        <div className='post-image'>
+                            <img alt="" src={'http://localhost:5000/uploads/' + post.image} />
+                        </div>
+                    )
+                }
+            })()}
+            <div>
+                <div id={post._id}>
+                    {getText(post)}
+                </div>
             </div>
-        </div>
-        <div className='post-options'>
-            <button onClick={(e) => likeClicked(post._id, e)}>Like</button>
-            <div>0 likes</div>
-            <div>0 comments</div>
-            <button>Go to post</button>
-        </div>
+            <div className='post-options'>
+                <button onClick={(e) => likeClicked(post._id, e)}>{post.liked ? "Unlike" : "Like"}</button>
+                <div>0 likes</div>
+                <div>0 comments</div>
+                <button>Go to post</button>
+            </div>
     </div>
     )
 }
 
-export default createPost;
+export default CreatePost;

@@ -20,8 +20,10 @@ const verifyJWT = (req, res, next) => {
   } else {
     // So that guests can fetch posts
     if(req.query.skip) {
+      console.log('skip');
       return next();
     }
+    console.log("invalid");
     return res.status(498).json({ error: "Invalid token" });
   }
 }
