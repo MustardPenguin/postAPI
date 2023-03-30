@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Navigation from './routes/navigation';
 import CreatePost from "./routes/create-post";
 import Posts from './routes/posts';
+import Post from './routes/post';
 import Signup from './routes/sign-up';
 import Signin from './routes/sign-in';
 
@@ -46,10 +47,12 @@ const RouteSwitch = () => {
     <Navigation user={{username: user, updateUser: updateUser}} />
     
     <Routes>
-      <Route path='/posts' element={<Posts user={user}/>} />
+      <Route exact path='/posts' element={<Posts user={user}/>} />
+      <Route exact path='/posts/:id' element={<Post />} />
       <Route path='/sign-up' element={<Signup />} />
       <Route path='/sign-in' element={<Signin />} />
       <Route path='/create-post' element={<CreatePost user={user} />} />
+      
     </Routes>
       
     </BrowserRouter>

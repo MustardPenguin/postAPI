@@ -73,6 +73,11 @@ const likeClicked = async (id, e, updateLiked) => {
     });
 }
 
+const linkClicked = (id) => {
+    console.log('clicked');
+    window.location.href = '/posts/' + id;
+}
+
 const CreatePost = (props) => {
     const post = props.post;
     const updateLiked = props.updateLiked;
@@ -100,7 +105,7 @@ const CreatePost = (props) => {
                 <button onClick={(e) => likeClicked(post._id, e, updateLiked)}>{post.liked ? "Unlike" : "Like"}</button>
                 <div>{post.likes} likes</div>
                 <div>0 comments</div>
-                <button>Go to post</button>
+                <button onClick={() => linkClicked(post._id)}>Go to post</button>
             </div>
     </div>
     )

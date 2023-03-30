@@ -5,7 +5,7 @@ const navigation = (props) => {
     const clicked = (e) => {
         const element = e.target;
         if(element.innerHTML === "Posts") {
-            window.location.href = "posts";
+            window.location.href = "/posts";
         } else if(element.innerHTML === "Register") {
             window.location.href = "sign-up";
         } else if(element.innerHTML === "Sign in") {
@@ -23,6 +23,7 @@ const navigation = (props) => {
                 }).then(response => {
                     localStorage.removeItem('token');
                     props.user.updateUser("");
+                    window.location.reload();
                 });
             }
             logout();

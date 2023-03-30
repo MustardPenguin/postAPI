@@ -59,6 +59,8 @@ const Posts = () => {
         fetchPosts("?" + new URLSearchParams({
             skip: 0
         }));
+        // Disables missing dependency warning
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {

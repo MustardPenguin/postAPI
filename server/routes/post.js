@@ -11,7 +11,7 @@ const { listeners } = require('../models/user');
 router.get('/', jwtVerify, (req, res) => {
   const skip = req.query.skip === undefined ? 0 : req.query.skip;
   let posts;
-  Post.find().sort({ date: -1 }).skip(skip).populate("author", { password: 0 }).limit(3).lean()
+  Post.find().sort({ date: -1 }).skip(skip).populate("author", { password: 0 }).limit(6).lean()
     .then(results => { 
       posts = results;
       // Get likes for posts
@@ -80,7 +80,15 @@ router.get('/', jwtVerify, (req, res) => {
 });
 
 router.get('/:id', (req, res) => {
-  return res.send('Get blog ' + req.params.id);
+  Post.findById(req.params.id)
+    .then(result => {
+      if(result === null) {
+        return res.status(404).json({ message: 'Post not found'} );
+      }
+      return res.json({ post: result });
+    }).catch(err => {
+      return res.status(500).json({ message: err.toString() });
+    });
 });
 
 router.post('/', jwtVerify, upload.single('image'), (req, res) => {
