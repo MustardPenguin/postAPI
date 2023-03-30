@@ -12,66 +12,72 @@ router.get('/', jwtVerify, (req, res) => {
   const skip = req.query.skip === undefined ? 0 : req.query.skip;
   let posts;
   Post.find().sort({ date: -1 }).skip(skip).populate("author", { password: 0 }).limit(3).lean()
-    .then(results => {
-      // Not logged in, just send posts
+    .then(results => { 
+      posts = results;
+      // Get likes for posts
+      return Like.aggregate([
+        {
+          $match: {
+            likedPost: { $in: posts.map(post => post._id ) }
+          }
+        },
+        {
+          $group: {
+            _id: "$likedPost",
+            count: { $sum: 1 }
+          }
+        }
+      ]);
+    }).then(results => {
+      // Sets amount of likes to their respective post
+      posts.forEach((post) => {
+        const likes = results.find((obj) => {
+          return obj._id.toString() === post._id.toString();
+        });
+        let count = 0;
+        if(likes !== undefined) {
+          count = likes.count;
+        }
+        post.likes = count;
+      });
+
       if(req.user === undefined) {
-        return res.json({ posts: results });
+        // User not logged in, no need to go through the other then blocks,
+        // end it with this statement, which calls the 'catch' block with undefined
+        // error, which just returns the posts.
+        return Promise.reject();
       }
 
-      // Logged in, check for likes
-      posts = results;
+      // Fetches the likes from user if logged in
       const userId = new mongoose.Types.ObjectId(req.user.id);
-
+      // Gets ids of posts to check if liked
       const ids = [];
       for(let post of results) {
         ids[ids.length] = post._id;
       }
-
-      posts = results;
-
+      
       return Like.find({ username: userId, likedPost: { $in: ids } });
-  }).then(results => {
-    const likedIds = results.map(post => {
-      return post.likedPost.toString();
-    });
-    
-    for(const post of posts) {
-      const id = post._id.toString();
-      if(likedIds.includes(id)) {
-        post.liked = true;
-      }
-    }
-
-    return Like.aggregate([
-      {
-        $match: {
-          likedPost: { $in: posts.map(post => post._id ) }
-        }
-      },
-      {
-        $group: {
-          _id: "$likedPost",
-          count: { $sum: 1 }
-        }
-      }
-    ]);
-  }).then(results => {
-    posts.forEach((post) => {
-      const likes = results.find((obj) => {
-        //console.log(obj._id.toString() === post._id.toString());
-        return obj._id.toString() === post._id.toString();
+    }).then((results) => {
+      console.log(results);
+      // Converts ids to string ids for comparison
+      const likedIds = results.map(post => {
+        return post.likedPost.toString();
       });
-      let count = 0;
-      if(likes !== undefined) {
-        count = likes.count;
+      // Checks for liked posts
+      for(const post of posts) {
+        const id = post._id.toString();
+        if(likedIds.includes(id)) {
+          post.liked = true;
+        }
       }
-      post.likes = count;
+
+      return res.json({ posts: posts });
+    }).catch((err) => {
+      if(err === undefined) {
+        return res.json({ posts: posts });
+      } 
+      return res.json({ message: err.toString() });
     });
-    
-    return res.json({ posts: posts });
-  }).catch(err => {
-    return res.status(404).json({ error: err.toString() });
-  });
 });
 
 router.get('/:id', (req, res) => {
