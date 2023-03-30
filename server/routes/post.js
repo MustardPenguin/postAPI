@@ -58,7 +58,6 @@ router.get('/', jwtVerify, (req, res) => {
       
       return Like.find({ username: userId, likedPost: { $in: ids } });
     }).then((results) => {
-      console.log(results);
       // Converts ids to string ids for comparison
       const likedIds = results.map(post => {
         return post.likedPost.toString();

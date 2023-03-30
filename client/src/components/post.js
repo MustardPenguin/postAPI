@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 const { DateTime } = require('luxon');
 
 const readMore = (e, id, text) => {
@@ -38,7 +37,7 @@ const getText = (post) => {
     }
 }
 
-const likeClicked = async (id, e) => {
+const likeClicked = async (id, e, updateLiked) => {
     if(localStorage.getItem('token') === null) {
         window.alert("Please log in first.");
         return;
@@ -63,7 +62,7 @@ const likeClicked = async (id, e) => {
                     } else {
                         e.target.innerHTML = "Like";
                     }
-                    
+                    updateLiked(id, data.message);
                 }
             });
         } else {
@@ -76,6 +75,7 @@ const likeClicked = async (id, e) => {
 
 const CreatePost = (props) => {
     const post = props.post;
+    const updateLiked = props.updateLiked;
 
     return (
         <div className='post'>
@@ -97,8 +97,8 @@ const CreatePost = (props) => {
                 </div>
             </div>
             <div className='post-options'>
-                <button onClick={(e) => likeClicked(post._id, e)}>{post.liked ? "Unlike" : "Like"}</button>
-                <div>0 likes</div>
+                <button onClick={(e) => likeClicked(post._id, e, updateLiked)}>{post.liked ? "Unlike" : "Like"}</button>
+                <div>{post.likes} likes</div>
                 <div>0 comments</div>
                 <button>Go to post</button>
             </div>

@@ -39,11 +39,20 @@ const Posts = () => {
           });
     }
 
-    const updateLiked = (id) => {
-        const post = posts.find((post) => {
-            return post._id === id;
+    const updateLiked = (id, message) => {
+        const newPosts = [...posts];
+        newPosts.forEach(post => {
+            if(post._id === id) {
+                console.log('update');
+                if(message === 'Liked') {
+                    post.likes++;
+                } else {
+                    post.likes--;
+                }
+                return;
+            }
         });
-        console.log(post);
+        updatePosts(newPosts);
     }
 
     useEffect(() => {
@@ -58,7 +67,6 @@ const Posts = () => {
             if($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
                 if(loading) { return; }
                 updateLoading(true);
-                console.log(document.querySelector('.end-of-posts'));
                 setTimeout(() => {
                     if(document.querySelector('.end-of-posts')) { return; }
                     updateLoading(false);
@@ -94,7 +102,7 @@ const Posts = () => {
         <div className='post-main-page'>
             <div className='post-holder'>
                 {posts.map(post => {
-                    return <CreatePost post={post} key={post._id} />;
+                    return <CreatePost post={post} key={post._id} updateLiked={updateLiked} />;
                 })}
                 <div className='loading-indicator'>
                     {loading === true ? "Loading more posts..." : ""}
