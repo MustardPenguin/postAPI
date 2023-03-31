@@ -48,10 +48,10 @@ const RouteSwitch = () => {
     
     <Routes>
       <Route exact path='/posts' element={<Posts user={user}/>} />
-      <Route exact path='/posts/:id' element={<Post />} />
-      <Route path='/sign-up' element={<Signup />} />
-      <Route path='/sign-in' element={<Signin />} />
-      <Route path='/create-post' element={<CreatePost user={user} />} />
+      <Route exact path='/posts/:id' element={<Post user={user} />} />
+      <Route exact path='/sign-up' element={<Signup />} />
+      <Route exact path='/sign-in' element={<Signin />} />
+      <Route exact path='/create-post' element={<CreatePost user={user} />} />
       
     </Routes>
       

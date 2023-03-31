@@ -38,23 +38,23 @@
 }
 
 /* Text */
-.post > div:nth-child(4) {
+.post-text {
     padding-top: 8px;
+    padding-bottom: 8px;
 }
 
-.post > div:nth-child(4) > div {
+.post-text > div {
     width: 90%;
     white-space: pre-line;
 }
 
-.post > div:nth-child(4) > div > p {
+.post-text > div > p {
     display: flex;
     flex-direction: column;
 }
 
 /* Options */
 .post-options {
-    margin-top: 12px;
     justify-content: space-around !important;
 }
 
@@ -67,9 +67,9 @@
     border-width: 1px;
 }
 
-
 /* Image */
 .post-image img {
     max-width: 100%;
     max-height: 100%;
+    padding-top: 8px;
 }

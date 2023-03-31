@@ -42,10 +42,7 @@ const likeClicked = async (id, e, updateLiked) => {
         window.alert("Please log in first.");
         return;
     }
-    const formData = new FormData();
-    formData.append('id', id);
-    formData.append('type', 'post');
-
+    
     await fetch("http://localhost:5000/likes", {
         method: "POST",
         headers: {
@@ -96,7 +93,7 @@ const CreatePost = (props) => {
                     )
                 }
             })()}
-            <div>
+            <div className='post-text'>
                 <div id={post._id}>
                     {getText(post)}
                 </div>

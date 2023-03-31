@@ -80,7 +80,7 @@ router.get('/', jwtVerify, (req, res) => {
 });
 
 router.get('/:id', (req, res) => {
-  Post.findById(req.params.id)
+  Post.findById(req.params.id).populate('author')
     .then(result => {
       if(result === null) {
         return res.status(404).json({ message: 'Post not found'} );

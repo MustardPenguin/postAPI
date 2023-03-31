@@ -15,7 +15,6 @@ const CreatePost = (props) => {
         formData.append('text', form.text);
         formData.append('image', form.image);
 
-
         await fetch("http://localhost:5000/posts", {
             method: "POST",
             headers: {
