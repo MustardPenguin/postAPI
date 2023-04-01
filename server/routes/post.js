@@ -79,13 +79,43 @@ router.get('/', jwtVerify, (req, res) => {
     });
 });
 
-router.get('/:id', (req, res) => {
-  Post.findById(req.params.id).populate('author')
+router.get('/:id', jwtVerify, (req, res) => {
+  let post;
+  Post.findById(req.params.id).populate('author').lean()
     .then(result => {
       if(result === null) {
         return res.status(404).json({ message: 'Post not found'} );
       }
-      return res.json({ post: result });
+      
+      post = result;
+      return Like.aggregate([
+        {
+          $match: {
+            likedPost: post._id
+          }
+        },
+        {
+          $group: {
+            _id: "$likedPost",
+            count: { $sum: 1 }
+          }
+        }
+      ]);
+    }).then(result => {
+      post.likes = result[0] ? result[0].count : 0;
+      if(!req.user) {
+        return res.json({ post: post });
+      }
+      return Like.find({ 
+        username: new mongoose.Types.ObjectId(req.user.id),
+        likedPost: post._id,
+       });
+    }).then(result => {
+      if(result.length > 0) {
+        post.liked = true;
+      }
+      
+      return res.json({ post: post });
     }).catch(err => {
       return res.status(500).json({ message: err.toString() });
     });

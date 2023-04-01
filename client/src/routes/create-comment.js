@@ -10,9 +10,6 @@ const CreateComment = (props) => {
 
 
     const onSubmit = async (e) => {
-        // For some unknown reason, when this function calls, everything seems to break?
-        // Calling it then visiting sign-in or sign-up just... breaks everything...
-        // 
         e.preventDefault();
         if(props.user === "") {
             window.alert("Please log in first.");
@@ -25,7 +22,7 @@ const CreateComment = (props) => {
                 "x-access-token": localStorage.getItem("token"),
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ "comment": comment })
+            body: JSON.stringify({ "comment": comment, "post": props.postId })
         }).then(response => {
             response.json().then(data => {
                 console.log(data);

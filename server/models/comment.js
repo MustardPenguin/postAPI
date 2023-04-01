@@ -5,8 +5,8 @@ const Post = require('./post');
 const User = require('./user');
 
 const commentSchema = new Schema({
-    user: { type: Schema.Types.ObjectId, ref: User, required: true },
-    blog: { type: Schema.Types.ObjectId, ref: Post, required: true },
+    username: { type: Schema.Types.ObjectId, ref: User, required: true },
+    post: { type: Schema.Types.ObjectId, ref: Post, required: true },
     date: { type: Date, required: true },
     comment: { type: String, required: true },
 });

@@ -7,11 +7,11 @@ const navigation = (props) => {
         if(element.innerHTML === "Posts") {
             window.location.href = "/posts";
         } else if(element.innerHTML === "Register") {
-            window.location.href = "sign-up";
+            window.location.href = "/sign-up";
         } else if(element.innerHTML === "Sign in") {
-            window.location.href = "sign-in";
+            window.location.href = "/sign-in";
         } else if(element.innerHTML === 'Create post') {
-            window.location.href = "create-post"
+            window.location.href = "/create-post"
         } else {
             if(localStorage.getItem('token') == null) { return; }
             const logout = async () => {
