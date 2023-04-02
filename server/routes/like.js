@@ -6,7 +6,7 @@ const Post = require('../models/post');
 const Comment = require('../models/comment');
 const User = require('../models/user');
 
-router.post('/', jwtVerify, (req, res) => {
+router.post('/', jwtVerify(true), (req, res) => {
     let db;
     if(req.body.type === "post") {
         db = Post;

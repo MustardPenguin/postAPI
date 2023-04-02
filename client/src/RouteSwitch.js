@@ -28,7 +28,7 @@ const RouteSwitch = () => {
           // If token exist in local storage but logged in is false, then token
           // expired, so remove it
           localStorage.removeItem('token');
-        } else if(data.user !== undefined) {
+        } else if(data.user !== undefined && data.user !== null) {
           setUser(data.user.username);
         }
       })

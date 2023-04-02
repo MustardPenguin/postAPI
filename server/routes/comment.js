@@ -14,7 +14,7 @@ router.get('/:id', (req, res) => {
     return res.send('Get comment ' + req.params.id);
 });
 
-router.post('/', jwtVerify, (req, res) => {
+router.post('/', jwtVerify(true), (req, res) => {
     if(req.body.comment.length > 2000) {
         return res.json({ message: "Please reduce comment to 2000 characters." });
     }

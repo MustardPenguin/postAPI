@@ -8,7 +8,7 @@ const upload = require('../upload');
 const Like = require('../models/like');
 const { listeners } = require('../models/user');
 
-router.get('/', jwtVerify, (req, res) => {
+router.get('/', jwtVerify(false), (req, res) => {
   const skip = req.query.skip === undefined ? 0 : req.query.skip;
   let posts;
   Post.find().sort({ date: -1 }).skip(skip).populate("author", { password: 0 }).limit(6).lean()
@@ -79,12 +79,15 @@ router.get('/', jwtVerify, (req, res) => {
     });
 });
 
-router.get('/:id', jwtVerify, (req, res) => {
+router.get('/:id', jwtVerify(false), (req, res) => {
   let post;
   Post.findById(req.params.id).populate('author').lean()
     .then(result => {
       if(result === null) {
-        return res.status(404).json({ message: 'Post not found'} );
+        res.status(404).json({ message: 'Post not found'} );
+        const error = new Error();
+        error.status = 404;
+        return Promise.reject({ error: error });
       }
       
       post = result;
@@ -104,7 +107,8 @@ router.get('/:id', jwtVerify, (req, res) => {
     }).then(result => {
       post.likes = result[0] ? result[0].count : 0;
       if(!req.user) {
-        return res.json({ post: post });
+        res.json({ post: post });
+        return Promise.reject({ sent: true, test: new Error() });
       }
       return Like.find({ 
         username: new mongoose.Types.ObjectId(req.user.id),
@@ -117,11 +121,14 @@ router.get('/:id', jwtVerify, (req, res) => {
       
       return res.json({ post: post });
     }).catch(err => {
-      return res.status(500).json({ message: err.toString() });
+      if(err.sent === true) {
+        return;
+      }
+      return res.status(500).json({ message: err });
     });
 });
 
-router.post('/', jwtVerify, upload.single('image'), (req, res) => {
+router.post('/', jwtVerify(true), upload.single('image'), (req, res) => {
     if(req.user) {
         User.findById(req.user.id)
           .then((result) => {

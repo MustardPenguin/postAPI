@@ -33,7 +33,7 @@ router.post('/sign-in',
   },
 );
 
-router.get("/log-out", jwtVerify, (req, res, next) => {
+router.get("/log-out", jwtVerify(true), (req, res, next) => {
     console.log(req.user);
     req.logout(function(err) {
       if(err) {
@@ -44,11 +44,11 @@ router.get("/log-out", jwtVerify, (req, res, next) => {
     });
 });
 
-router.get('/verify', jwtVerify, (req, res, next) => {
+router.get('/verify', jwtVerify(false), (req, res, next) => {
   if(req.user) {
     res.json({ user: req.user });
   } else {
-      res.json({ user: null });
+    res.json({ user: null });
   }
 });
 
