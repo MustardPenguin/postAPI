@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 
 const CreateComment = (props) => {
     const [comment, updateComment] = useState("");
+    const comments = props.comments;
 
     const onChange = (e) => {
         updateComment(e.target.value);
     }
-
 
     const onSubmit = async (e) => {
         e.preventDefault();
@@ -25,7 +25,13 @@ const CreateComment = (props) => {
             body: JSON.stringify({ "comment": comment, "post": props.postId })
         }).then(response => {
             response.json().then(data => {
-                console.log(data);
+                if(data.success) {
+                    data.comment.username = {
+                        username: props.user,
+                        _id: data._id,
+                    }
+                    comments.updateComments([data.comment].concat(comments.comments));
+                }
             });
         }).catch(err => {
             window.alert(err);

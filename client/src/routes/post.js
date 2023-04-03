@@ -37,8 +37,36 @@ const Post = (props) => {
                 updateComments(data.comments);
             });
           }).catch(err => {
-
+            window.alert(err);
           });
+    }
+
+    const onClick = async (e) => {
+        await fetch("http://localhost:5000/likes", {
+            method: "POST",
+            headers: {
+                "x-access-token": localStorage.getItem("token"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: id, type: 'post' })
+        }).then(response => {
+            if(response.ok) {
+                response.json().then(data => {
+                    if(data.success) {
+                        const increment = data.message === 'Liked' ? 1 : -1;
+                        updatePost({
+                            ...post, 
+                            'liked': data.message === 'Liked',
+                            'likes': post.likes + increment
+                         })
+                    }
+                });
+            } else {
+                console.log("Error creating like");
+            }
+        }).catch(err => {
+            window.alert(err);
+        });
     }
     
     useEffect(() => {
@@ -46,18 +74,6 @@ const Post = (props) => {
         fetchComments();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    const CreateCommentElement = (comment) => {
-        comment = {
-            username: "test", comment: "test"
-        }
-
-        return (
-            <div className='comment'>
-                <div>{comment.username}</div>
-            </div>
-        )
-    }
 
     return (
         <div className='post-main-page'>
@@ -83,17 +99,21 @@ const Post = (props) => {
                     </div>
 
                     <div className='post-options'>
-                        <button >
+                        <button onClick={onClick} >
                             {post.liked ? "Unlike" : "Like"}</button>
                         <div>{post.likes} likes</div>
-                        <div>0 comments</div>
+                        <div>{comments.length} comments</div>
                     </div>
                 </div>
 
                 <div style={{
                     fontSize: 18,
                 }}>Create Comment</div>
-                <CreateComment user={props.user} postId={post._id} />
+                <CreateComment 
+                    user={props.user} 
+                    postId={post._id}
+                    comments={{ comments: comments, updateComments: updateComments }}
+                 />
                 <div style={{
                     fontSize: 18,
                 }}>Comments</div>

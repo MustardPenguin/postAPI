@@ -42,6 +42,32 @@ router.get('/', jwtVerify(false), (req, res) => {
         post.likes = count;
       });
 
+      return Comment.aggregate([
+        {
+          $match: {
+            post: { $in: posts.map(post => post._id) }
+          }
+        },
+        {
+          $group: {
+            _id: "$post",
+            count: { $sum: 1 }
+          }
+        }
+      ]);
+    }).then(results => {
+      // Sets amount of comments to their respective post
+      posts.forEach((post) => {
+        const comments = results.find((obj) => {
+          return obj._id.toString() === post._id.toString();
+        });
+        let count = 0;
+        if(comments !== undefined) {
+          count = comments.count;
+        }
+        post.comments = count;
+      });
+      
       if(req.user === undefined) {
         // User not logged in, no need to go through the other then blocks,
         // end it with this statement, which calls the 'catch' block with undefined
@@ -53,7 +79,7 @@ router.get('/', jwtVerify(false), (req, res) => {
       const userId = new mongoose.Types.ObjectId(req.user.id);
       // Gets ids of posts to check if liked
       const ids = [];
-      for(let post of results) {
+      for(let post of posts) {
         ids[ids.length] = post._id;
       }
       
@@ -116,6 +142,7 @@ router.get('/:id', jwtVerify(false), (req, res) => {
         likedPost: post._id,
        });
     }).then(result => {
+      post.liked = false;
       if(result.length > 0) {
         post.liked = true;
       }
@@ -131,7 +158,7 @@ router.get('/:id', jwtVerify(false), (req, res) => {
 
 // Get comments for a singular post
 router.get('/:id/comments', (req, res) => {
-  Comment.find({ post: req.params.id }).populate('username', { username: 1 })
+  Comment.find({ post: req.params.id }).sort({ date: -1 }).populate('username', { username: 1 })
     .then(results => {
       return res.json({ comments: results });
     }).catch(err => {

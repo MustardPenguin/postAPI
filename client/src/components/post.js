@@ -101,7 +101,7 @@ const CreatePost = (props) => {
             <div className='post-options'>
                 <button onClick={(e) => likeClicked(post._id, e, updateLiked)}>{post.liked ? "Unlike" : "Like"}</button>
                 <div>{post.likes} likes</div>
-                <div>0 comments</div>
+                <div>{post.comments} comments</div>
                 <button onClick={() => linkClicked(post._id)}>Go to post</button>
             </div>
     </div>
