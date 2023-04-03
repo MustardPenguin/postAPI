@@ -6,6 +6,7 @@ const User = require('../models/user');
 const mongoose = require('mongoose');
 const upload = require('../upload');
 const Like = require('../models/like');
+const Comment = require('../models/comment');
 const { listeners } = require('../models/user');
 
 router.get('/', jwtVerify(false), (req, res) => {
@@ -81,7 +82,7 @@ router.get('/', jwtVerify(false), (req, res) => {
 
 router.get('/:id', jwtVerify(false), (req, res) => {
   let post;
-  Post.findById(req.params.id).populate('author').lean()
+  Post.findById(req.params.id).populate('author', { username: 1 }).lean()
     .then(result => {
       if(result === null) {
         res.status(404).json({ message: 'Post not found'} );
@@ -108,7 +109,7 @@ router.get('/:id', jwtVerify(false), (req, res) => {
       post.likes = result[0] ? result[0].count : 0;
       if(!req.user) {
         res.json({ post: post });
-        return Promise.reject({ sent: true, test: new Error() });
+        return Promise.reject({ sent: true });
       }
       return Like.find({ 
         username: new mongoose.Types.ObjectId(req.user.id),
@@ -125,6 +126,16 @@ router.get('/:id', jwtVerify(false), (req, res) => {
         return;
       }
       return res.status(500).json({ message: err });
+    });
+});
+
+// Get comments for a singular post
+router.get('/:id/comments', (req, res) => {
+  Comment.find({ post: req.params.id }).populate('username', { username: 1 })
+    .then(results => {
+      return res.json({ comments: results });
+    }).catch(err => {
+      return res.status(500).json({ message: err.toString() });
     });
 });
 

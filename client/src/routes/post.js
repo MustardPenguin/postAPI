@@ -3,16 +3,15 @@ import React, { useState, useEffect } from 'react';
 import '../styles/post-page.css';
 import { DateTime } from 'luxon';
 import CreateComment from './create-comment';
+import Comment from '../components/comment';
 
 const Post = (props) => {
     const [post, updatePost] = useState({});
+    const [comments, updateComments] = useState([]);
     const { id } = useParams();
 
     const fetchPosts = async () => {
-        const params = "?" + new URLSearchParams({
-            skip: 0
-        });
-        await fetch('http://localhost:5000/posts/' + id + params, {
+        await fetch('http://localhost:5000/posts/' + id, {
             method: 'GET',
             headers: {
                 "x-access-token": localStorage.getItem('token')
@@ -28,9 +27,23 @@ const Post = (props) => {
             }
         );
     }
+
+    const fetchComments = async () => {
+        await fetch('http://localhost:5000/posts/' + id + '/comments', {
+            methods: 'GET',
+        }).then(response => {
+            response.json().then(data => {
+                console.log(data);
+                updateComments(data.comments);
+            });
+          }).catch(err => {
+
+          });
+    }
     
     useEffect(() => {
         fetchPosts();
+        fetchComments();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -85,7 +98,9 @@ const Post = (props) => {
                     fontSize: 18,
                 }}>Comments</div>
                 <div className='comment-holder'>
-                    {CreateCommentElement()}
+                    {comments.map(comment => {
+                        return <Comment comment={comment} key={comment._id} />
+                    })}
                 </div>
 
             </div>

@@ -42,11 +42,15 @@ router.post('/', jwtVerify(true), (req, res) => {
             date: new Date(),
             comment: req.body.comment
         });
-        console.log(comment);
 
-        return res.json({ message: "Create comment" });
+        comment.save()
+          .then(() => {
+            return res.json({ comment: comment, success: true });
+          }).catch(err => {
+            return Promise.reject({ err });
+          });
       }).catch(err => {
-        return res.status(500).json({ message: err.toString() });
+        return res.status(500).json({ message: err });
       });
 });
 
